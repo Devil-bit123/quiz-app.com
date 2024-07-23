@@ -17,10 +17,15 @@ class Course extends Model
     ];
 
 
-    public function courseUsers()
+    public function banks()
     {
-        return $this->hasMany(CourseUser::class, 'id_Course');
+        return $this->hasMany(Banks::class);
     }
 
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'course_user', 'id_Course', 'id_User');
+    }
 
 }

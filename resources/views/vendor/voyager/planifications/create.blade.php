@@ -1,8 +1,14 @@
 @extends('voyager::master')
 
 @section('content')
+
+@php
+use App\Constants\English;
+@endphp
+
+
     <div class="container mt-4">
-        <h2>Planificación</h2>
+        <h2>{{ English::Planification_text  }}</h2>
         <form id="planificationForm" class="needs-validation" novalidate method="POST" action="{{ route('planification.create') }}">
             @csrf
 
@@ -12,14 +18,14 @@
                 <label for="InputName" class="form-label">Name</label>
                 <input type="text" name="name" class="form-control" id="InputName" aria-describedby="nameHelp" required>
                 <div class="invalid-feedback">
-                    Por favor, ingrese un nombre.
+                    {{ English::Name_text_error_for_planification  }}
                 </div>
             </div>
             <div class="mb-3">
                 <label for="InputDescription" class="form-label">Description</label>
                 <textarea name="description" class="form-control" id="InputDescription" rows="3" required></textarea>
                 <div class="invalid-feedback">
-                    Por favor, ingrese una descripción.
+                    {{ English::Description_text_error_for_planification }}
                 </div>
             </div>
 
@@ -32,7 +38,7 @@
                     @endforeach
                 </select>
                 <div class="invalid-feedback">
-                    Por favor, seleccione un tipo.
+                    {{ English::Type_text_error_for_planification  }}
                 </div>
             </div>
 
@@ -40,7 +46,7 @@
                 <label for="InputDate" class="form-label">Date</label>
                 <input type="date" name="date" class="form-control" id="InputDate" required>
                 <div class="invalid-feedback">
-                    La fecha de planificación no puede ser menor al día actual.
+                    {{ English::Date_text_error_for_planification }}
                 </div>
             </div>
 
@@ -48,7 +54,7 @@
         </form>
 
         <div id="errorAlert" class="alert alert-danger mt-3" style="display: none;" role="alert">
-            La fecha de planificación no puede ser menor al día actual o no ha seleccionado un tipo válido.
+            {{ English::Validation_text_error_for_planification }}
         </div>
     </div>
 

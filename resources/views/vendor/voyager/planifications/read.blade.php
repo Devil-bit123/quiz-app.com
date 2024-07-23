@@ -1,32 +1,57 @@
 @extends('voyager::master')
 
 @section('content')
-    <div class="container mt-4">
-        <h2>Planificaciones del Curso: {{ $course->name }}</h2>
 
-        @foreach ($planificationsByType as $type => $planifications)
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3>{{ ucfirst($type) }}</h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        @foreach ($planifications as $planificationCourse)
-                            <div class="col-md-4 mb-3">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $planificationCourse->planification->name }}</h5>
-                                        <p class="card-text">{{ $planificationCourse->planification->description }}</p>
-                                        <p class="card-text">
-                                            <small class="text-muted">{{ \Carbon\Carbon::parse($planificationCourse->planification->date)->format('d/m/Y') }}</small>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+@php
+use App\Constants\English;
+@endphp
+
+<div class="container mt-4">
+    <h2>{{ $course->name }} {{ English::Planification_text }}</h2>
+
+    @switch($user->role->name)
+        @case('docente')
+            @foreach ($planifications as $planification)
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $planification->planification->name  }}</h5>
+                        <p class="card-text">{{ $planification->planification->description  }}</p>
+                        <p class="card-text">
+                            <small class="text-muted">{{ $planification->planification->date  }}</small>
+                        </p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between">
+                        <a href="{{ route('planification.configurate',['planification'=>$planification->planification->id]) }}" class="btn btn-primary">{{ English::Configuration_text }}</a>
+                        <a href="{{ route('planification.edit', ['id' => $planification->planification->id]) }}" class="btn btn-warning">{{ English::Update_text }}</a>
+                        <a href="#" class="btn btn-danger">{{ English::Delete_text }}</a>
                     </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
+            @endforeach
+        @break
+
+        @case('alumno')
+            @foreach ($planifications as $planification)
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $planification->planification->name  }}</h5>
+                        <p class="card-subtitle">{{ $planification->planification->type  }}</p>
+                        <p class="card-text">{{ $planification->planification->description  }}</p>
+                        <p class="card-text">
+                            <small class="text-muted">{{ $planification->planification->date  }}</small>
+                        </p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between">
+
+                        <a href="#" class="btn btn-warning">{{ English::Take_text }}</a>
+                    </div>
+                </div>
+            @endforeach
+        @break
+
+        @default
+            <p>{{ English::Planification_text_default }}</p>
+        @break
+    @endswitch
+</div>
+
 @endsection

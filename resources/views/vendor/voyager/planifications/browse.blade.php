@@ -20,6 +20,7 @@
     @endif
 
 
+
     @if ($courses->isNotEmpty())
 
         @foreach ($courses as $course)

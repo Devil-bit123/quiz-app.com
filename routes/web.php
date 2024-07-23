@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BanksController;
 use App\Http\Controllers\CourseUserController;
 use App\Http\Controllers\PlanificationController;
 use App\Models\Course;
@@ -51,9 +52,25 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/show-planification/{course}', [PlanificationController::class, 'details'])
     ->name('planification.details');
 
+    // web.php (o el archivo de rutas correspondiente)
+    Route::get('/planification/{id}/edit', [PlanificationController::class, 'edit'])
+    ->name('planification.edit');
+    Route::post('/planification/{id}/update', [PlanificationController::class, 'update'])
+    ->name('planification.update');
 
+    Route::post('/configurate-planification/{planification}', [PlanificationController::class, 'configurate'])
+    ->name('planification.configurate');
+
+    Route::get('/plans', [PlanificationController::class, 'getPlansByCourse']);
 
     //------------------------------------------------------------------------
 
+    /**
+     * Banks
+     */
+    Route::get('/add-bank/', [BanksController::class, 'create'])->name('bank.add');
+    Route::post('/store-bank', [BanksController::class, 'store'])->name('bank.store');
+    Route::get('/partials/{type}', [BanksController::class, 'loadPartialView']);
+    Route::post('/receive-json', [BanksController::class, 'receiveJson'])->name('receive-json');
 
 });

@@ -42,9 +42,14 @@ class User extends \TCG\Voyager\Models\User
         'email_verified_at' => 'datetime',
     ];
 
-    public function courseUsers()
+    public function course()
     {
         return $this->hasMany(CourseUser::class, 'id_User');
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user', 'id_User', 'id_Course');
     }
 
 

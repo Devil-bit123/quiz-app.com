@@ -37,4 +37,11 @@ class Planification extends Model
         ];
     }
 
+
+
+    public function bank()
+    {
+        return $this->hasOne(Banks::class);
+    }
+
 }
