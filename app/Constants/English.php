@@ -2,6 +2,8 @@
 
 namespace App\Constants;
 
+use App\Models\Planification;
+
 class English
 {
     /**
@@ -15,12 +17,23 @@ class English
     const Save_text = 'Save';
     const Add_text = 'Add';
     const Select_text = 'Select an option';
+    const Actions_text = 'Actions';
+    const Show_questions_text = 'Show Questions';
+
+    /**
+     * Courses
+     */
+
+     const Course_text = 'Course';
 
     /**
      * Planifications
      */
     const Planification_text = 'Plans';
     const Planification_text_default = 'No schedules available.';
+    const Planification_delete_modal_title = 'Do you want to delete';
+    const Planification_delete_modal_error = 'Your planification have a question bank or info asociated';
+    const Planification_delete_modal_success = 'Planification deleted';
 
 
     /**
@@ -44,6 +57,7 @@ class English
     const Enter_answer_text= 'Enter an answer';
     const Correct_answer_text = 'Select the correct answer';
     const Select_course_text = 'Select the course';
+
 
     /**
      * Partials

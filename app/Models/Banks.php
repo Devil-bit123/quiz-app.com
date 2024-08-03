@@ -19,7 +19,7 @@ class Banks extends Model
 
     public function planification()
     {
-        return $this->belongsTo(Planification::class,'id');
+        return $this->belongsTo(Planification::class,'id_Planification');
     }
 
     public function course()

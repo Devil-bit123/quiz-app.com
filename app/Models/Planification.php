@@ -41,7 +41,15 @@ class Planification extends Model
 
     public function bank()
     {
-        return $this->hasOne(Banks::class);
+        return $this->hasOne(Banks::class,'id_Planification');
     }
+
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'planification_courses', 'id_Planification', 'id_Course');
+    }
+
+
+
 
 }

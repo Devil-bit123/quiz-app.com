@@ -30,7 +30,7 @@
                         <h5 class="card-title">{{ $course->name }}</h5>
                         <p class="card-text">{{ $course->description }}</p>
 
-                        @if ($user->role->name == 'docente')
+                        @if ($user->role->name == 'docente' || $user->role->name == 'admin')
                             <button href="/course-details/{{ $course->id }}" type="submit" class="btn btn-primary"><a href="{{ route('courses.details', ['course' => $course->id]) }}" class="btn btn-primary">Planificar</a></button>
                             <button href="/show-planification/{{ $course->id }}" type="submit" class="btn btn-primary"><a href="{{ route('planification.details', ['course' => $course->id]) }}" class="btn btn-primary">Ver</a></button>
                         @elseif ($user->role->name == 'alumno')

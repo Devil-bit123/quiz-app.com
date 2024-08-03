@@ -52,9 +52,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/show-planification/{course}', [PlanificationController::class, 'details'])
     ->name('planification.details');
 
-    // web.php (o el archivo de rutas correspondiente)
     Route::get('/planification/{id}/edit', [PlanificationController::class, 'edit'])
     ->name('planification.edit');
+
     Route::post('/planification/{id}/update', [PlanificationController::class, 'update'])
     ->name('planification.update');
 
@@ -62,6 +62,9 @@ Route::group(['prefix' => 'admin'], function () {
     ->name('planification.configurate');
 
     Route::get('/plans', [PlanificationController::class, 'getPlansByCourse']);
+
+    Route::delete('/delete-planification/{planification}', [PlanificationController::class, 'destroy'])
+    ->name('planification.delete');
 
     //------------------------------------------------------------------------
 
@@ -72,5 +75,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/store-bank', [BanksController::class, 'store'])->name('bank.store');
     Route::get('/partials/{type}', [BanksController::class, 'loadPartialView']);
     Route::post('/receive-json', [BanksController::class, 'receiveJson'])->name('receive-json');
+
+    // web.php (para peticiones a través de un navegador)
+    Route::get('/edit-bank/{banks}', [BanksController::class, 'edit'])->name('bank.edit');
+    Route::post('/save-bank', [BanksController::class, 'update'])->name('bank.update');
+    Route::delete('/delete-bank/{banks}', [BanksController::class, 'destroy'])->name('bank.delete');
+
 
 });

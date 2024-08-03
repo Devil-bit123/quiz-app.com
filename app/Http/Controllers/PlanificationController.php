@@ -24,22 +24,27 @@ class PlanificationController extends Controller
     {
         $user = Auth::user();
 
-        $courses = $user->courses;
+        //dd($user->course);
 
-
-        //dd($courses);
-        // Verificar si hay cursos
-        if ($courses->isNotEmpty()) {
+        if ($user->role->name == 'admin') {
+            $courses = Course::all();
             return view('vendor.voyager.planifications.browse', compact('courses', 'user'));
         } else {
-            // Pasar el mensaje de error a la vista
-            return view('vendor.voyager.planifications.browse', [
-                'courses' => collect(), // Asegúrate de pasar una colección vacía para evitar errores
-                'error' => 'No estás matriculado en ningún curso',
-                'user' => 'user'
-            ]);
-        }
 
+            $courses = $user->courses;
+            //dd($courses);
+            // Verificar si hay cursos
+            if ($courses->isNotEmpty()) {
+                return view('vendor.voyager.planifications.browse', compact('courses', 'user'));
+            } else {
+                // Pasar el mensaje de error a la vista
+                return view('vendor.voyager.planifications.browse', [
+                    'courses' => collect(), // Asegúrate de pasar una colección vacía para evitar errores
+                    'error' => 'No estás matriculado en ningún curso',
+                    'user' => 'user'
+                ]);
+            }
+        }
     }
 
 
@@ -97,7 +102,7 @@ class PlanificationController extends Controller
     public function details(Course $course)
     {
         $user = Auth::user();
-        $planifications = PlanificationCourse::where('id_Course', $course->id)->get();
+        $planifications = PlanificationCourse::where('id_Course', $course->id)->with('planification')->get();
         //dd($planifications);
         return view('vendor.voyager.planifications.read', compact('planifications', 'course', 'user'));
     }
@@ -141,13 +146,8 @@ class PlanificationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validar los datos de entrada
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'type' => 'required|string',
-            'date' => 'required|date|after_or_equal:today',
-        ]);
+
+        //dd($request);
 
         // Buscar la planificación
         $planification = Planification::findOrFail($id);
@@ -187,7 +187,7 @@ class PlanificationController extends Controller
                 return $planificationCourse->planification;
             });
 
-            //($plans);
+        //($plans);
 
         return response()->json($plans);
     }
@@ -203,6 +203,13 @@ class PlanificationController extends Controller
      */
     public function destroy(Planification $planification)
     {
-        //
+        $bank = $planification->bank;
+        if (!$bank) {
+            $planification->delete();
+            return response()->json(['success' => true, 'message' => English::Planification_delete_modal_success]);
+        } else {
+            return response()->json(['success' => false, 'message' => English::Planification_delete_modal_error]);
+        }
     }
+
 }

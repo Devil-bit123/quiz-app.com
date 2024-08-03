@@ -16,15 +16,17 @@ class PlanificationCourse extends Model
         'id_Planification'
     ];
 
-// PlanificationCourse.php
-public function planification()
-{
-    return $this->belongsTo(Planification::class, 'id_Planification');
-}
+    // PlanificationCourse.php
+    public function planification()
+    {
+        return $this->belongsTo(Planification::class, 'id_Planification');
+    }
 
     public function courses()
     {
         return $this->belongsTo(Course::class, 'id_Course');
     }
+
+
 
 }
