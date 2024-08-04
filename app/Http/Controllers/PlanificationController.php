@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Test;
 use App\Models\User;
 use App\Models\Course;
 use App\Constants\English;
@@ -102,8 +103,26 @@ class PlanificationController extends Controller
     public function details(Course $course)
     {
         $user = Auth::user();
-        $planifications = PlanificationCourse::where('id_Course', $course->id)->with('planification')->get();
+        //$planifications = PlanificationCourse::where('id_Course', $course->id)->with('planification')->get();
+
+        $planifications = Planification::whereHas('courses', function ($query) use ($course) {
+            // Especifica a qué tabla pertenece el id en la subconsulta
+            $query->where('courses.id', $course->id);
+        })->with('courses')->get();
+
+        // Verificar si el banco de preguntas asociado tiene un test
+        foreach ($planifications as $planification) {
+            // Verificar si el banco de preguntas existe
+            if ($planification->bank) {
+                // Verificar si el banco de preguntas tiene un test
+                $planification->hasTest = $planification->bank->tests()->exists();
+            } else {
+                $planification->hasTest = false;
+            }
+        }
+
         //dd($planifications);
+
         return view('vendor.voyager.planifications.read', compact('planifications', 'course', 'user'));
     }
 
@@ -170,7 +189,11 @@ class PlanificationController extends Controller
     public function configurate(Request $request, Planification $planification)
     {
 
-        dd($planification);
+
+        $banks = $planification->bank;
+        $course = $planification->courses;
+
+        return view('vendor.voyager.planifications.configurate', compact('planification', 'banks'));
     }
 
     public function getPlansByCourse(Request $request)
@@ -179,7 +202,8 @@ class PlanificationController extends Controller
 
         $plans = PlanificationCourse::where('id_Course', $courseId)
             ->whereHas('planification', function ($query) {
-                $query->where('type', Planification::TYPE_TEST);
+                $query->where('type', Planification::TYPE_TEST)
+                    ->whereDoesntHave('bank');
             })
             ->with('planification')
             ->get()
@@ -211,5 +235,4 @@ class PlanificationController extends Controller
             return response()->json(['success' => false, 'message' => English::Planification_delete_modal_error]);
         }
     }
-
 }

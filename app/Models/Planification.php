@@ -49,7 +49,4 @@ class Planification extends Model
         return $this->belongsToMany(Course::class, 'planification_courses', 'id_Planification', 'id_Course');
     }
 
-
-
-
 }
