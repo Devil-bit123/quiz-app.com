@@ -23,5 +23,9 @@ class Test extends Model
         return $this->belongsTo(Banks::class, 'id_Bank');
     }
 
+    public function responses()
+    {
+        return $this->hasMany(Responses::class,'id_Test');
+    }
 
 }

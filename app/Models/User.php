@@ -52,5 +52,9 @@ class User extends \TCG\Voyager\Models\User
         return $this->belongsToMany(Course::class, 'course_user', 'id_User', 'id_Course');
     }
 
+    public function responses()
+    {
+        return $this->hasMany(Responses::class,'id_User');
+    }
 
 }

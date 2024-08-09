@@ -2,6 +2,10 @@
 
 @section('content')
 
+@php
+use App\Constants\English;
+@endphp
+
 @if (session('success'))
 <div class="alert alert-success">
     {{ session('success') }}
@@ -25,12 +29,12 @@
                 @if ($user->role->name == 'docente')
                     <form action="{{ route('courses-user.matriculation', ['course' => $course->id]) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-primary">Dictar</button>
+                        <button type="submit" class="btn btn-primary">{{ English::Teach_text }}</button>
                     </form>
                 @elseif ($user->role->name == 'alumno')
                     <form action="{{ route('courses-user.matriculation', ['course' => $course->id]) }}" method="POST">
                         @csrf
-                        <button type="submit" class="btn btn-primary">Matricularse</button>
+                        <button type="submit" class="btn btn-primary">{{ English::Sign_up_text }}</button>
                     </form>
                 @endif
 

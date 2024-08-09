@@ -101,31 +101,51 @@ class PlanificationController extends Controller
      */
 
     public function details(Course $course)
-    {
-        $user = Auth::user();
-        //$planifications = PlanificationCourse::where('id_Course', $course->id)->with('planification')->get();
-
+{
+    $user = Auth::user();
+    if ($user->role->name == 'alumno') {
         $planifications = Planification::whereHas('courses', function ($query) use ($course) {
-            // Especifica a qué tabla pertenece el id en la subconsulta
             $query->where('courses.id', $course->id);
         })->with('courses')->get();
 
-        // Verificar si el banco de preguntas asociado tiene un test
+        // Verificar si el banco de preguntas asociado tiene un test y si el alumno autenticado ya ha respondido
         foreach ($planifications as $planification) {
-            // Verificar si el banco de preguntas existe
             if ($planification->bank) {
-                // Verificar si el banco de preguntas tiene un test
                 $planification->hasTest = $planification->bank->tests()->exists();
+                if ($planification->hasTest) {
+                    foreach ($planification->bank->tests as $test) {
+                        $userResponse = $test->responses()->where('id_User', $user->id)->first();
+                        $test->userHasResponded = $userResponse !== null;
+                        $test->userResponseId = $userResponse ? $userResponse->id : null;
+                    }
+                }
             } else {
                 $planification->hasTest = false;
             }
         }
+        return view('vendor.voyager.planifications.read', compact('planifications', 'course', 'user'));
+    } else if ($user->role->name == 'admin' || $user->role->name == 'docente') {
+        $planifications = Planification::whereHas('courses', function ($query) use ($course) {
+            $query->where('courses.id', $course->id);
+        })->with(['courses', 'bank.tests.responses'])->get();
 
-        //dd($planifications);
-
+        foreach ($planifications as $planification) {
+            if ($planification->bank) {
+                $planification->hasTest = $planification->bank->tests()->exists();
+                if ($planification->hasTest) {
+                    foreach ($planification->bank->tests as $test) {
+                        // Aquí obtenemos todas las respuestas de los alumnos para este test
+                        $responses = $test->responses()->get();
+                        $test->responses = $responses; // Añadimos las respuestas al test para ser utilizadas en la vista
+                    }
+                }
+            } else {
+                $planification->hasTest = false;
+            }
+        }
         return view('vendor.voyager.planifications.read', compact('planifications', 'course', 'user'));
     }
-
+}
 
 
     /**
@@ -214,6 +234,18 @@ class PlanificationController extends Controller
         //($plans);
 
         return response()->json($plans);
+    }
+
+    public function show_scores(Planification $planification)
+    {
+        // Acceder a las respuestas a través de las relaciones
+        $responses = $planification->bank->tests->load('responses.user')->flatMap(function($test) {
+            return $test->responses;
+        });
+
+        // Mostrar las respuestas
+        //dd($responses);
+        return view('vendor.voyager.responses.browse', compact('responses'));
     }
 
 
