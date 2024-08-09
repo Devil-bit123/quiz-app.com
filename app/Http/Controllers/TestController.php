@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Planification;
 use App\Models\Test;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TestController extends Controller
 {
@@ -14,8 +16,18 @@ class TestController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+
+        // Verificar si el usuario no tiene el rol de 'admin' o 'docente'
+        if (!($user->role->name == 'admin' || $user->role->name == 'docente')) {
+            return redirect()->back()->withErrors(['message' => 'No tienes permisos para acceder a esta página.']);
+        } else {
+            $tests = Test::with(['bank.planification', 'bank.planification.courses'])->get();
+            //dd($tests);
+            return view('vendor.voyager.tests.browse', compact('tests', 'user'));
+        }
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -68,6 +80,11 @@ class TestController extends Controller
     public function edit(Test $test)
     {
         //
+        //dd($test->bank->id_Planification);
+        $planification=Planification::find($test->bank->id_Planification);
+        $banks = $planification->bank;
+        $course = $planification->courses;
+        return view('vendor.voyager.tests.update',compact('test','planification','banks','course'));
     }
 
     /**
@@ -80,6 +97,17 @@ class TestController extends Controller
     public function update(Request $request, Test $test)
     {
         //
+        //dd($request);
+        //dd($test);
+
+        $test->id = $request->test;
+        $test->id_Bank = $request->bank;
+        $test->question_number = $request->questions;
+        $test->duration_in_minutes = $request->minutes;
+        $test->save();
+
+        return redirect()->route('planification.index')->with('success', 'Test editado exitosamente.');
+
     }
 
     /**
@@ -91,5 +119,8 @@ class TestController extends Controller
     public function destroy(Test $test)
     {
         //
+        //dd($test);
+        $test->delete();
+        return redirect()->route('planification.index')->with('success', 'Test eliminado exitosamente.');
     }
 }

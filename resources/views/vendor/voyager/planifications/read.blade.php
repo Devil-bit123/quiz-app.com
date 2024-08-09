@@ -34,8 +34,8 @@
                                             minutes</p>
                                     </div>
                                 @endforeach
-
-
+                                <a href="{{ route('test.edit', ['test' => $test->id]) }}"
+                                    class="btn btn-primary">{{ English::Update_text }} {{ English::Test_configuration_text }}</a>
                                 <a href="{{ route('planification.edit', ['id' => $plan->id]) }}"
                                     class="btn btn-warning">{{ English::Update_text }} {{ English::Planification_text }}</a>
                                 <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#myModal"
@@ -70,7 +70,6 @@
                         <p class="card-text">
                             <small class="text-muted">{{ $plan->date }}</small>
                         </p>
-
                         @if ($plan->hasTest)
                             @foreach ($plan->bank->tests as $test)
                                 <div>
@@ -81,8 +80,8 @@
                                         minutes</p>
                                 </div>
                             @endforeach
-
-
+                            <a href="{{ route('test.edit', ['test' => $test->id]) }}"
+                                class="btn btn-primary">{{ English::Update_text }} {{ English::Test_configuration_text }}</a>
                             <a href="{{ route('planification.edit', ['id' => $plan->id]) }}"
                                 class="btn btn-warning">{{ English::Update_text }} {{ English::Planification_text }}</a>
                             <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#myModal"

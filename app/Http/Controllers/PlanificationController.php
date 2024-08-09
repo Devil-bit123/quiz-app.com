@@ -136,7 +136,7 @@ class PlanificationController extends Controller
      */
     public function show(Planification $planification)
     {
-        dd($planification);
+        //dd($planification);
     }
 
     /**

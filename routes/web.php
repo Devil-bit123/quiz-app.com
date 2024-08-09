@@ -86,4 +86,8 @@ Route::group(['prefix' => 'admin'], function () {
      * Test
      */
     Route::post('save-test', [TestController::class, 'store'])->name('store.test');
+    Route::get('test', [TestController::class, 'index'])->name('test.index');
+    Route::get('/edit-test/{test}', [TestController::class, 'edit'])->name('test.edit');
+    Route::put('/update-test/{test}', [TestController::class, 'update'])->name('test.update');
+    Route::delete('/delete-test/{test}', [TestController::class, 'destroy'])->name('test.delete');
 });
